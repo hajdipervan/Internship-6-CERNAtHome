@@ -84,17 +84,17 @@ FROM Scientists s
 JOIN Countries c ON c.Id=s.CountryId
 --DODAJ OVAJ PPP?
 
---3-- NE RADI
+--3--RADI
 --svaku kombinaciju projekta i akceleratora, pri čemu nas zanimaju samo nazivi; 
 --u slučaju da projekt nije vezan ni za jedan akcelerator, svejedno ga ispiši uz ime akceleratora ‘NEMA GA’.
-
-SELECT ms.Name,
-	COALESCE(CAST((SELECT MAX(st.CreatedAt) FROM Streams st
-	 	JOIN Songs sg ON sg.Id=st.SongId
-	 	JOIN SongMusicians sm ON sg.Id=sm.SongId
-	 	JOIN Musicians m ON m.Id=sm.MusicianId
-	 WHERE ms.Id=m.Id) 	AS VARCHAR), 'None') AS LastStream
-FROM Musicians ms
+SELECT p.Name, 
+COALESCE((SELECT STRING_AGG(a.Name, ' ') FROM Accelerators a 
+		 JOIN AcceleratorProject ap ON a.Id=ap.AcceleratorId
+		 JOIN Projects ps ON ap.ProjectId=ps.Id
+		WHERE ps.Id=p.Id
+		), 'None') AS Acc
+FROM Projects p
+ORDER BY p.Name
 
 --4-- RADI
 --sve projekte kojima je bar jedan od radova izašao između 2015. i 2017.
@@ -140,6 +140,12 @@ JOIN ScientificWorks sw ON p.Id=sw.UsedInProjectId
 GROUP BY a.Name
 ORDER BY a.Name
 
+--9--broj znanstvenika po struci, desetljeću rođenja i spolu; 
+--u slučaju da je broj znanstvenika manji od 20, ne prikazuj kategoriju; 
+--poredaj prikaz po desetljeću rođenja
+SELECT DISTINCT ON(s.Profession) s.Profession, COUNT(s.Profession), COUNT(EXTRACT(DECADE FROM s.BirthDate)), s.Gender FROM Scientists s
+GROUP BY s.Profession, s.Gender, s.BirthDate
+ORDER BY s.Profession,EXTRACT(DECADE FROM s.BirthDate)
 --ok kod--
 SELECT c.Name, COUNT(sw.Id) FROM Countries c
 JOIN Scientists s ON s.CountryId=c.Id
@@ -165,7 +171,7 @@ INSERT INTO Countries(Id, Name, Population) VALUES
 
 INSERT INTO Scientists(Id, Name, Surname, BirthDate, Gender, Profession, CountryId, HotelId) VALUES
 (default, 'Ivica', 'Puljak', '1970-08-30', '1', 'physicist', 1, 1),
-(default, 'Marija', 'Bliznac Trebjesanin', '1975-11-30', '2', 'engineer', 2, 3),
+(default, 'Marija', 'Bliznac Trebjesanin', '1975-11-30', '2', 'developer', 2, 3),
 (default, 'Darko', 'Vujica', '2000-10-10', '1', 'developer', 3, 1)
 
 INSERT INTO Projects(Id, Name) VALUES
