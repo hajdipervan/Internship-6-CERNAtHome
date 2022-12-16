@@ -133,7 +133,12 @@ GROUP BY h.City
 ORDER BY COUNT(s.Id) DESC
 
 --8--prosječan broj citata radova po svakom akceleratoru
-
+SELECT a.Name, ROUND(AVG(sw.NumberOfQuotes), 2) FROM Accelerators a
+JOIN AcceleratorProject ap ON ap.AcceleratorId=a.Id
+JOIN Projects p ON p.Id=ap.ProjectId
+JOIN ScientificWorks sw ON p.Id=sw.UsedInProjectId
+GROUP BY a.Name
+ORDER BY a.Name
 
 --ok kod--
 SELECT c.Name, COUNT(sw.Id) FROM Countries c
@@ -172,7 +177,7 @@ INSERT INTO Projects(Id, Name) VALUES
 
 INSERT INTO ScientificWorks(Id, Name, NumberOfQuotes, ReleaseDate, UsedInProjectId) VALUES
 (default, 'Logaritamska funkcija', 30, '2010-5-6', 1),
-(default, 'Funkcije', 20, '2011-5-10', 1),
+(default, 'Funkcije', 10, '2011-5-10', 1),
 (default, 'Bozja cestica', 25, '2015-10-6', 2)
 
 INSERT INTO ScientistScientificWork(ScientistId,ScientificWorkId ) VALUES
