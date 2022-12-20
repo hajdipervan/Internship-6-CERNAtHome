@@ -36,7 +36,7 @@ SELECT DISTINCT ON(p.Name) p.Name AS Projects FROM Projects p
 JOIN ScientificWorks sw ON sw.UsedInProjectId=p.Id
 WHERE DATE_PART('year', sw.ReleaseDate)>2014 AND DATE_PART('year', sw.ReleaseDate)<2017
 
---5-- RADI
+--5-- 
 --u istoj tablici po zemlji broj radova i najpopularniji rad znanstvenika iste zemlje, 
 --pri čemu je najpopularniji rad onaj koji ima najviše citata
 SELECT c.Name, COUNT(DISTINCT  sw.Id) AS NumberOfScientificWorks,
