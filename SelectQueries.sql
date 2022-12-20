@@ -1,7 +1,7 @@
 --1-- 
 --naziv i datum objave svakog znanstvenog rada zajedno s imenima znanstvenika koji su na njemu radili, 
 --pri čemu imena znanstvenika moraju biti u jednoj ćeliji i u obliku Prezime, I.; npr. Puljak, I.; Godinović, N.; Bilušić, A.
-SELECT sw.Name, sw.ReleaseDate, STRING_AGG(CONCAT(s.Surname, ', ', LEFT(s.Name, 1), '.'), '; ') FROM ScientificWorks sw 
+SELECT sw.Name, sw.ReleaseDate, STRING_AGG(CONCAT(s.Surname, ', ', LEFT(s.Name, 1), '.'), '; ') AS Scientists FROM ScientificWorks sw 
 JOIN ScientistScientificWork ssw ON ssw.ScientificWorkId=sw.Id
 JOIN Scientists s ON s.Id=ssw.ScientistId
 GROUP BY sw.Name, sw.ReleaseDate
